@@ -1,0 +1,10 @@
+click>=8.1.7
+python-dotenv>=1.0.0
+requests>=2.31.0
+GitPython>=3.1.40
+chromadb>=0.4.22
+sentence-transformers>=2.2.2
+rich>=13.7.0
+PyGithub>=2.1.1
+python-magic>=0.4.27
+tqdm>=4.66.1

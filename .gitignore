@@ -1,0 +1,5 @@
+.venv/
+chroma_db/
+repo_surfer.egg-info/
+__pycache__/
+.env
