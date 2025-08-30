@@ -2,7 +2,7 @@
 
 A powerful terminal-based AI agent for GitHub repository analysis and exploration. Dive deep into any repository, understand its structure, and get intelligent insights without leaving your terminal.
 
-![Repo Surfer Demo](https://img.shields.io/badge/demo-coming_soon-blue)
+
 [![Python Version](https://img.shields.io/badge/python-3.8%2B-blue)](https://www.python.org/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
@@ -130,9 +130,6 @@ Contributions are welcome! Here's how you can help:
 4. Push to the branch: `git push origin feature/your-feature`
 5. Open a Pull Request
 
-## 📄 License
-
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
 ## 🙏 Acknowledgments
 
