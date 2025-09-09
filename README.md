@@ -192,5 +192,5 @@ Contributions are welcome! Here's how you can help:
 ---
 
 <p align="center">
-  Made with ✨ by Your Name | 🌍 <a href="https://yourwebsite.com">yourwebsite.com</a>
+  Made with ✨ by Shubham| 🌍 <a href="https://yourwebsite.com">yourwebsite.com</a>
 </p>
