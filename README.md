@@ -2,7 +2,6 @@
 
 A powerful terminal-based AI agent for GitHub repository analysis and exploration. Dive deep into any repository, understand its structure, and get intelligent insights without leaving your terminal.
 
-[![PyPI version](https://img.shields.io/pypi/v/repo-surfer.svg)](https://pypi.org/project/repo-surfer/)
 [![Python Version](https://img.shields.io/badge/python-3.8%2B-blue)](https://www.python.org/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
