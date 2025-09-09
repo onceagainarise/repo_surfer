@@ -17,64 +17,85 @@ class MemoryManager:
         self.persist_directory = Path(persist_directory)
         self.persist_directory.mkdir(parents=True, exist_ok=True)
         
+        # Initialize Chroma client with the new API
+        self.client = chromadb.PersistentClient(
+            path=str(self.persist_directory)
+        )
+        
+        # Define our simple embedding function
+        import chromadb.utils.embedding_functions as embedding_functions
+        
+        class SimpleEmbeddingFunction(embedding_functions.DefaultEmbeddingFunction):
+            def __init__(self):
+                super().__init__()
+                
+            def __call__(self, input):
+                # Handle both string and list of strings input
+                if isinstance(input, str):
+                    input = [input]
+                
+                # Create simple hash-based embeddings (not for production use)
+                import hashlib
+                
+                # Generate deterministic 384-dim vectors for each input
+                vectors = []
+                for text in input:
+                    hash_int = int(hashlib.sha256(text.encode()).hexdigest()[:16], 16)
+                    vector = []
+                    for _ in range(384):
+                        hash_int, val = divmod(hash_int, 2**32)
+                        vector.append((val % 2000 - 1000) / 1000.0)  # Values between -1 and 1
+                    vectors.append(vector)
+                return vectors
+                
+            def name(self):
+                return "simple_embedding"
+        
+        self.embedding_function = SimpleEmbeddingFunction()
+        
+        # First try to get the existing collection
         try:
-            # Initialize Chroma client with the new API
-            self.client = chromadb.PersistentClient(
-                path=str(self.persist_directory)
+            self.collection = self.client.get_collection(
+                name="conversation_memory"
             )
-            
-            import chromadb.utils.embedding_functions as embedding_functions
-            
-            class SimpleEmbeddingFunction(embedding_functions.DefaultEmbeddingFunction):
-                def __init__(self):
-                    super().__init__()
-                    
-                def __call__(self, input):
-                    # Handle both string and list of strings input
-                    if isinstance(input, str):
-                        input = [input]
-                    
-                    # Create simple hash-based embeddings (not for production use)
-                    import hashlib
-                    import struct
-                    
-                    # Generate deterministic 384-dim vectors for each input
-                    vectors = []
-                    for text in input:
-                        hash_int = int(hashlib.sha256(text.encode()).hexdigest()[:16], 16)
-                        vector = []
-                        for _ in range(384):
-                            hash_int, val = divmod(hash_int, 2**32)
-                            vector.append((val % 2000 - 1000) / 1000.0)  # Values between -1 and 1
-                        vectors.append(vector)
-                    return vectors
-                    
-                def name(self):
-                    return "simple_embedding"
-                    
-            # Create an instance of our embedding function
-            embedding_function = SimpleEmbeddingFunction()
-            
-            # Create or get collection with the new API
-            self.collection = self.client.get_or_create_collection(
-                name="conversation_memory",
-                metadata={"hnsw:space": "cosine"},
-                embedding_function=embedding_function
-            )
-        except Exception as e:
-            print(f"Error initializing ChromaDB: {e}")
-            print("Falling back to in-memory storage...")
-            # Fallback to in-memory client if persistent storage fails
-            self.client = chromadb.Client()
-            self.collection = self.client.create_collection(
-                "conversation_memory",
-                embedding_function=embedding_function
-            )
+        except Exception:
+            # If collection doesn't exist, create it with our embedding function
+            try:
+                self.collection = self.client.create_collection(
+                    name="conversation_memory",
+                    metadata={"hnsw:space": "cosine"},
+                    embedding_function=self.embedding_function
+                )
+            except Exception as e:
+                print(f"Error creating ChromaDB collection: {e}")
+                print("Falling back to in-memory storage...")
+                # Fallback to in-memory client if persistent storage fails
+                self.client = chromadb.Client()
+                self.collection = self.client.create_collection(
+                    "conversation_memory",
+                    embedding_function=self.embedding_function
+                )
     
     def _generate_id(self, text: str) -> str:
         """Generate a deterministic ID for a text"""
         return hashlib.sha256(text.encode()).hexdigest()
     
+    def _flatten_metadata(self, metadata: Dict[str, Any]) -> Dict[str, str]:
+        """
+        Flatten nested metadata into a single level dictionary with string values.
+        Nested dictionaries are converted to JSON strings.
+        """
+        flat_metadata = {}
+        for key, value in metadata.items():
+            if value is None:
+                flat_metadata[key] = ""
+            elif isinstance(value, (str, int, float, bool)):
+                flat_metadata[key] = str(value)
+            else:
+                # Convert complex objects to JSON strings
+                flat_metadata[key] = json.dumps(value)
+        return flat_metadata
+
     def add_conversation(
         self, 
         query: str, 
@@ -103,10 +124,13 @@ class MemoryManager:
         conv_id = str(uuid.uuid4())
         
         try:
+            # Flatten metadata for ChromaDB compatibility
+            flat_metadata = self._flatten_metadata({'query': query, **metadata})
+            
             # Store in ChromaDB
             self.collection.upsert(
                 documents=[response],
-                metadatas=[{'query': query, **metadata}],
+                metadatas=[flat_metadata],
                 ids=[conv_id]
             )
             return conv_id

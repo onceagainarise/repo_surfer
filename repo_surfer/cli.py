@@ -386,19 +386,14 @@ def chat(ctx: click.Context, message: str):
     from .llm_manager import LLMManager
     
     console = Console()
-    llm = LLMManager()
-    memory_manager = MemoryManager()
     
-    # Get response from LLM
+    # Initialize memory manager and LLM
+    memory_manager = MemoryManager()
+    llm = LLMManager(memory_manager=memory_manager)
+    
+    # Get response from LLM (memory is handled internally by LLMManager)
     with console.status("[bold green]Thinking...") as status:
         response = llm.chat(message)
-        
-        # Store conversation in memory
-        memory_manager.add_conversation(
-            query=message,
-            response=response,
-            metadata={"timestamp": datetime.now().isoformat()}
-        )
         
         # Print the response
         console.print("\n[bold]AI:[/bold]")
