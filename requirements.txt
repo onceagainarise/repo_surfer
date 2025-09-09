@@ -8,3 +8,8 @@ rich>=13.7.0
 PyGithub>=2.1.1
 python-magic>=0.4.27
 tqdm>=4.66.1
+langchain
+langchain_community
+langchain_groq
+langchain_core
+langgraph

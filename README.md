@@ -2,9 +2,11 @@
 
 A powerful terminal-based AI agent for GitHub repository analysis and exploration. Dive deep into any repository, understand its structure, and get intelligent insights without leaving your terminal.
 
-
+[![PyPI version](https://img.shields.io/pypi/v/repo-surfer.svg)](https://pypi.org/project/repo-surfer/)
 [![Python Version](https://img.shields.io/badge/python-3.8%2B-blue)](https://www.python.org/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
+[![Imports: isort](https://img.shields.io/badge/%20imports-isort-%231674b1?style=flat&labelColor=ef8336)](https://pycqa.github.io/isort/)
 
 ## ✨ Features
 
@@ -13,9 +15,18 @@ A powerful terminal-based AI agent for GitHub repository analysis and exploratio
 - **Structure Visualization**: View repository structure with file sizes and types
 - **Commit History**: Browse through commit history and changes
 - **Local & Remote Support**: Analyze both local and remote repositories
+- **AI-Powered Insights**: Leverage LLMs for code understanding and generation
 - **Memory Management**: Persistent conversation history using ChromaDB
 
 ## 🚀 Installation
+
+### Using pip (Recommended)
+
+```bash
+pip install repo-surfer
+```
+
+### From Source
 
 1. Clone the repository:
    ```bash
@@ -26,17 +37,59 @@ A powerful terminal-based AI agent for GitHub repository analysis and exploratio
 2. Create and activate a virtual environment (recommended):
    ```bash
    python -m venv .venv
-   source .venv/bin/activate  # On Windows: .venv\Scripts\activate
+   # On Windows:
+   .venv\Scripts\activate
+   # On Unix or MacOS:
+   source .venv/bin/activate
    ```
 
 3. Install the package in development mode:
    ```bash
-   pip install -e .
+   pip install -e ".[dev]"  # For development with all dependencies
    ```
 
-## 🛠️ CLI Commands
+## 🔧 Configuration
 
-### `analyze` - Analyze a Repository
+1. Create a `.env` file in your project root or home directory with your API keys:
+   ```bash
+   # Required for private repositories and higher rate limits
+   GITHUB_TOKEN=your_github_token_here
+   
+   # Optional: For using GPT models
+   # OPENAI_API_KEY=your_openai_api_key_here
+   
+   # Optional: For using HuggingFace models
+   # HUGGINGFACEHUB_API_TOKEN=your_hf_token_here
+   ```
+
+   You can copy the example configuration:
+   ```bash
+   cp .env.example .env
+   ```
+   Then edit the `.env` file with your credentials.
+
+## 🛠️ Usage
+
+### Command Line Interface
+
+```
+Usage: repo-surfer [OPTIONS] COMMAND [ARGS]...
+
+  Repo Surfer - A terminal-based AI agent for GitHub repository analysis
+
+Options:
+  --version  Show the version and exit.
+  --help     Show this message and exit.
+
+Commands:
+  analyze   Analyze a repository (local or GitHub)
+  chat      Start an interactive chat about the repository
+  config    Manage configuration settings
+  history   View command history
+```
+
+### Analyze a Repository
+
 Analyze a GitHub repository or local directory to get insights and statistics.
 
 ```bash
@@ -48,6 +101,9 @@ repo-surfer analyze /path/to/repo
 
 # Analyze GitHub repository (username/repo format)
 repo-surfer analyze username/repo
+
+# Analyze specific branch
+repo-surfer analyze username/repo --branch develop
 
 # Analyze GitHub repository using URL
 repo-surfer analyze https://github.com/username/repo
