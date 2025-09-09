@@ -4,15 +4,12 @@ A powerful terminal-based AI agent for GitHub repository analysis and exploratio
 
 [![Python Version](https://img.shields.io/badge/python-3.8%2B-blue)](https://www.python.org/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
-[![Imports: isort](https://img.shields.io/badge/%20imports-isort-%231674b1?style=flat&labelColor=ef8336)](https://pycqa.github.io/isort/)
 
 ## ✨ Features
 
 - **Repository Analysis**: Get detailed insights into any GitHub repository
 - **Interactive Chat**: Ask questions about the repository's codebase
 - **Structure Visualization**: View repository structure with file sizes and types
-- **Commit History**: Browse through commit history and changes
 - **Local & Remote Support**: Analyze both local and remote repositories
 - **AI-Powered Insights**: Leverage LLMs for code understanding and generation
 - **Memory Management**: Persistent conversation history using ChromaDB
