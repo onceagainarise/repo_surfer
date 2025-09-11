@@ -98,9 +98,6 @@ repo-surfer analyze /path/to/repo
 # Analyze GitHub repository (username/repo format)
 repo-surfer analyze username/repo
 
-# Analyze specific branch
-repo-surfer analyze username/repo --branch develop
-
 # Analyze GitHub repository using URL
 repo-surfer analyze https://github.com/username/repo
 ```
